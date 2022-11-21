@@ -1,18 +1,18 @@
-#include <unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include "get_next_line.h"
 #include <fcntl.h>
+#include <stdio.h>
 
 int main()
 {
-	char	buffer[10];
-	buffer[0] = '\0';
+	int fd1;
+	int fd2;
 
-	int	fd = open("text.txt", O_RDWR);
-	int size = read(fd, buffer, 10);
-	write(1, buffer, 2);
+
+	fd1 = open("text.txt", O_RDONLY);
+	fd2 = open("text2.txt", O_RDONLY);
+
+	printf("%s", get_next_line(fd1));
+	printf("%s", get_next_line(fd2));
+	printf("%s", get_next_line(fd1));
+	printf("%s", get_next_line(fd2));
 }
-
-123^@1234\n
-
-123345
