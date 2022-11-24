@@ -6,7 +6,7 @@
 /*   By: seojyang <seojyang@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/19 20:15:45 by seojyang          #+#    #+#             */
-/*   Updated: 2022/11/22 22:49:40 by seojyang         ###   ########.fr       */
+/*   Updated: 2022/11/24 22:54:56 by seojyang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,9 @@ typedef struct s_line
 }	t_line;
 
 char	*get_next_line(int fd);
-
-void	*ft_memcpy(void *dst, const void *src, size_t n);
-t_line	*new_line(void);
 char	*join(char *output, t_line *line);
 char	*read_finish(t_line *line, char *output);
+
+void	*ft_memcpy(void *dst, const void *src, size_t n);
 
 #endif

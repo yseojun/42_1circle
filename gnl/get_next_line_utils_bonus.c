@@ -6,7 +6,7 @@
 /*   By: seojyang <seojyang@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/19 20:16:18 by seojyang          #+#    #+#             */
-/*   Updated: 2022/11/24 21:29:18 by seojyang         ###   ########.fr       */
+/*   Updated: 2022/11/24 22:53:53 by seojyang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,53 +56,39 @@ void	remove_lst(t_list **list, int fd)
 	}
 }
 
-char	*read_finish(t_line *line, char *output, t_list **list, int fd)
-{
-	if (line->read_max_len < 0)
-	{
-		if (output)
-			free(output);
-		output = 0;
-		line->read_idx = 0;
-		line->read_max_len = 0;
-	}
-	free(line->buffer);
-	line->buffer = 0;
-	remove_lst(list, fd);
-	return (output);
-}
-
 char	*save_line(char *output, t_list **list, t_line line, int fd)
 {
 	t_list	*new;
 	t_list	*search;
 
 	search = *list;
-	if (search)
+	while (search)
 	{
-		while (search)
+		if (search->fd == fd)
 		{
-			if (search->fd == fd)
-			{
-				search->line = line;
-				return (output);
-			}
-			if (search->next == 0)
-				break ;
-			search = search->next;
+			search->line = line;
+			return (output);
 		}
+		if (search->next == 0)
+			break ;
+		search = search->next;
 	}
 	new = (t_list *)malloc(sizeof(t_list));
 	if (!new)
 		return (read_finish(&line, output, list, fd));
-	new->fd = fd;
-	new->line = line;
-	new->next = 0;
+	init_list(new, line, fd);
 	if (!search)
 		*list = new;
 	else
 		search->next = new;
 	return (output);
+}
+
+void	init_list(t_list *new, t_line line, int fd)
+{
+	new->fd = fd;
+	new->line = line;
+	new->next = 0;
 }
 
 void	*ft_memcpy(void *dst, const void *src, size_t n)

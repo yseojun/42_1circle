@@ -6,7 +6,7 @@
 /*   By: seojyang <seojyang@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/19 20:15:33 by seojyang          #+#    #+#             */
-/*   Updated: 2022/11/24 21:01:38 by seojyang         ###   ########.fr       */
+/*   Updated: 2022/11/24 22:59:29 by seojyang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,4 +65,20 @@ char	*join(char *output, t_line *line)
 	line->read_idx += join_len;
 	free(output);
 	return (new);
+}
+
+char	*read_finish(t_line *line, char *output, t_list **list, int fd)
+{
+	if (line->read_max_len < 0)
+	{
+		if (output)
+			free(output);
+		output = 0;
+		line->read_idx = 0;
+		line->read_max_len = 0;
+	}
+	free(line->buffer);
+	line->buffer = 0;
+	remove_lst(list, fd);
+	return (output);
 }
