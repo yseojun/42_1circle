@@ -6,28 +6,11 @@
 /*   By: seojyang <seojyang@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/19 20:15:33 by seojyang          #+#    #+#             */
-/*   Updated: 2022/11/22 23:27:26 by seojyang         ###   ########.fr       */
+/*   Updated: 2022/11/24 21:01:38 by seojyang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
-
-t_line	find_save(t_list *list, int fd)
-{
-	t_line	new_fd;
-
-	while (list)
-	{
-		if (fd == list->fd)
-			return (list->line);
-		list = list->next;
-	}
-	new_fd.buffer = 0;
-	new_fd.read_idx = 0;
-	new_fd.read_max_len = 0;
-	new_fd.output_len = 0;
-	return (new_fd);
-}
 
 char	*get_next_line(int fd)
 {
@@ -38,8 +21,8 @@ char	*get_next_line(int fd)
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (0);
 	line = find_save(list, fd);
-	output = 0;
 	line.output_len = 0;
+	output = 0;
 	if (!line.buffer)
 		line.buffer = malloc(BUFFER_SIZE);
 	while (1)
@@ -55,4 +38,31 @@ char	*get_next_line(int fd)
 		if (line.output_len && *(output + line.output_len - 1) == '\n')
 			return (save_line(output, &list, line, fd));
 	}
+}
+
+char	*join(char *output, t_line *line)
+{
+	char	*new;
+	ssize_t	join_len;
+
+	join_len = 0;
+	while (line->read_idx + join_len < line->read_max_len)
+	{
+		if (*(line->buffer + line->read_idx + join_len) == '\n')
+		{
+			join_len++;
+			break ;
+		}
+		join_len++;
+	}
+	new = malloc(line->output_len + join_len + 1);
+	if (!new)
+		return (0);
+	ft_memcpy(new, output, line->output_len);
+	ft_memcpy(new + line->output_len, line->buffer + line->read_idx, join_len);
+	new[line->output_len + join_len] = 0;
+	line->output_len += join_len;
+	line->read_idx += join_len;
+	free(output);
+	return (new);
 }

@@ -6,7 +6,7 @@
 /*   By: seojyang <seojyang@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/19 20:16:18 by seojyang          #+#    #+#             */
-/*   Updated: 2022/11/22 22:44:06 by seojyang         ###   ########.fr       */
+/*   Updated: 2022/11/24 17:03:51 by seojyang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ char	*read_finish(t_line *line, char *output)
 		if (output)
 			free(output);
 		output = 0;
+		line->read_idx = 0;
+		line->read_max_len = 0;
 	}
 	free(line->buffer);
 	line->buffer = 0;

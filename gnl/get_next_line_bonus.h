@@ -6,7 +6,7 @@
 /*   By: seojyang <seojyang@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/19 20:15:45 by seojyang          #+#    #+#             */
-/*   Updated: 2022/11/22 23:22:33 by seojyang         ###   ########.fr       */
+/*   Updated: 2022/11/24 20:52:21 by seojyang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,11 +35,12 @@ typedef struct s_list
 }	t_list;
 
 char	*get_next_line(int fd);
+char	*join(char *output, t_line *line);
 
 void	*ft_memcpy(void *dst, const void *src, size_t n);
-t_line	*new_line(void);
-char	*join(char *output, t_line *line);
 char	*read_finish(t_line *line, char *output, t_list **list, int fd);
 char	*save_line(char *output, t_list **list, t_line line, int fd);
+t_line	find_save(t_list *list, int fd);
+void	remove_lst(t_list **list, int fd);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: seojyang <seojyang@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/19 20:15:33 by seojyang          #+#    #+#             */
-/*   Updated: 2022/11/22 22:57:15 by seojyang         ###   ########.fr       */
+/*   Updated: 2022/11/24 21:32:40 by seojyang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ char	*get_next_line(int fd)
 		if (line.read_max_len <= 0)
 			return (read_finish(&line, output));
 		output = join(output, &line);
+		if (!output)
+			return (read_finish(&line, output));
 		if (line.output_len && *(output + line.output_len - 1) == '\n')
 			return (output);
 	}

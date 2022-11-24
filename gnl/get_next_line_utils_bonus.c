@@ -6,87 +6,102 @@
 /*   By: seojyang <seojyang@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/19 20:16:18 by seojyang          #+#    #+#             */
-/*   Updated: 2022/11/22 23:31:16 by seojyang         ###   ########.fr       */
+/*   Updated: 2022/11/24 21:29:18 by seojyang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
 
-char	*join(char *output, t_line *line)
+t_line	find_save(t_list *list, int fd)
 {
-	char	*new;
-	ssize_t	join_len;
+	t_line	new_fd;
 
-	join_len = 0;
-	while (line->read_idx + join_len < line->read_max_len)
+	while (list)
 	{
-		if (*(line->buffer + line->read_idx + join_len) == '\n')
-		{
-			join_len++;
-			break ;
-		}
-		join_len++;
+		if (fd == list->fd)
+			return (list->line);
+		list = list->next;
 	}
-	new = malloc(line->output_len + join_len + 1);
-	if (!new)
-		return (0);
-	ft_memcpy(new, output, line->output_len);
-	ft_memcpy(new + line->output_len, line->buffer + line->read_idx, join_len);
-	new[line->output_len + join_len] = 0;
-	line->output_len += join_len;
-	line->read_idx += join_len;
-	free(output);
-	return (new);
+	new_fd.buffer = 0;
+	new_fd.read_idx = 0;
+	new_fd.read_max_len = 0;
+	return (new_fd);
+}
+
+void	remove_lst(t_list **list, int fd)
+{
+	t_list	*save;
+	t_list	*search;
+
+	save = *list;
+	search = *list;
+	while (search)
+	{
+		if (search->fd == fd)
+		{
+			save->next = search->next;
+			if (save == search)
+			{
+				if (!search->next)
+					*list = 0;
+				else
+					*list = search->next;
+			}
+			free(search);
+			search = 0;
+			return ;
+		}
+		save = search;
+		search = search->next;
+	}
 }
 
 char	*read_finish(t_line *line, char *output, t_list **list, int fd)
 {
-	t_list	*save;
-
 	if (line->read_max_len < 0)
 	{
 		if (output)
 			free(output);
 		output = 0;
+		line->read_idx = 0;
+		line->read_max_len = 0;
 	}
 	free(line->buffer);
 	line->buffer = 0;
-	save = *list;
-	while (*list)
-	{
-		if ((*list)->fd == fd)
-		{
-			save = (*list)->next;
-			free(*list);
-			*list = 0;
-			return (output);
-		}
-		save = *list;
-		*list = (*list)->next;
-	}
+	remove_lst(list, fd);
 	return (output);
 }
 
 char	*save_line(char *output, t_list **list, t_line line, int fd)
 {
 	t_list	*new;
+	t_list	*search;
 
-	if (line.read_idx == line.read_max_len)
-		return (read_finish(&line, output, list, fd));
+	search = *list;
+	if (search)
+	{
+		while (search)
+		{
+			if (search->fd == fd)
+			{
+				search->line = line;
+				return (output);
+			}
+			if (search->next == 0)
+				break ;
+			search = search->next;
+		}
+	}
 	new = (t_list *)malloc(sizeof(t_list));
 	if (!new)
 		return (read_finish(&line, output, list, fd));
 	new->fd = fd;
 	new->line = line;
 	new->next = 0;
-	if (!*list)
+	if (!search)
 		*list = new;
 	else
-	{
-		while ((*list)->next)
-			*list = (*list)->next;
-		(*list)->next = new;
-	}
+		search->next = new;
 	return (output);
 }
 
